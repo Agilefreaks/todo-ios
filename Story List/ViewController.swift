@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -20,9 +21,12 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    @IBAction func btnClick(_ sender: UIButton) {
-        print("Hello world");
+    func Get(){
+        var url = "https://todo-backend-rails5-api.herokuapp.com/todos"
+        
+        
     }
+    
     
 }
 
