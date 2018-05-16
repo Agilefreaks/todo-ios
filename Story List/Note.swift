@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Note : Codable {
+struct Note : Codable {
     var _id : Oid
     var title : String
     var completed : Bool

@@ -12,6 +12,7 @@ import Alamofire
 class NotesTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate{
     
     var notes : [Note] = []
+    var api = ApiService()
    
     @IBOutlet weak var notesTableView: UITableView!
     @IBOutlet weak var tfNewNote: UITextField!
@@ -20,7 +21,9 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         super.viewDidLoad()
         tfNewNote.text = "What needs to be done"
         tfNewNote.textColor = UIColor.lightGray
-        getNotes()
+        
+        self.notes = api.getToDo()
+        self.notesTableView.reloadData()
         
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false
@@ -51,6 +54,13 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     @IBAction func tfNewNoteEditingDidEnd(_ sender: UITextField) {
+
+        if let title = tfNewNote.text {
+            api.postToDo(title: title)
+        }
+        
+        self.notesTableView.reloadData()
+        
         if (sender.text?.isEmpty)! {
                 sender.text = "What needs to be done"
                 sender.textColor = UIColor.lightGray
@@ -96,20 +106,5 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         return cell
     }
     
-    // MARK: - TODO create class
-    func getNotes(){
-        let url  = "https://todo-backend-rails5-api.herokuapp.com/todos"
-        Alamofire.request(url, method: .get).responseData { response in
-            switch response.result {
-            case let .success(value):
-                
-                let jsonDecoder = JSONDecoder()
-                self.notes = try! jsonDecoder.decode([Note].self, from: value)
-                self.notesTableView.reloadData()
-            case let .failure(error):
-                print(error)
-            }
-            
-        }
-    }
+    
 }
