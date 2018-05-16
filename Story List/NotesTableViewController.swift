@@ -9,17 +9,54 @@
 import UIKit
 import Alamofire
 
-class NotesTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    var notes : [Note] = []
+class NotesTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate{
     
+    var notes : [Note] = []
+   
     @IBOutlet weak var notesTableView: UITableView!
+    @IBOutlet weak var tfNewNote: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        tfNewNote.text = "What needs to be done"
+        tfNewNote.textColor = UIColor.lightGray
         getNotes()
+        
+        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:)))
+        tap.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(tap)
+      
     }
 
+    @IBAction func btnNoteCheckClick(_ sender: UIButton) {
+        
+        let isSelected = sender.isSelected
+        if isSelected == true {
+            if let image = UIImage(named: "Checkmarkempty.png"){
+                sender.setImage(image, for: .normal)
+            }
+        } else {
+            if let image = UIImage(named: "Checkmark.png"){
+                sender.setImage(image, for: .normal)
+            }
+        }
+        sender.isSelected = !sender.isSelected
+    }
+    
+    @IBAction func tfNewNoteEditingDidBegin(_ sender: UITextField) {
+        if sender.textColor == UIColor.lightGray {
+            sender.text = nil
+            sender.textColor = UIColor.black
+        }
+    }
+    
+    @IBAction func tfNewNoteEditingDidEnd(_ sender: UITextField) {
+        if (sender.text?.isEmpty)! {
+                sender.text = "What needs to be done"
+                sender.textColor = UIColor.lightGray
+        }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -33,7 +70,29 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         
         let row = indexPath.row
         let item = notes[row]
-        cell.textLabel?.text = item.title
+        let status = item.completed
+        let lblNote = cell.contentView.viewWithTag(1) as? UILabel
+        
+        lblNote?.text = item.title
+    
+        if let btnNoteCheck = cell.contentView.viewWithTag(2) as? UIButton {
+           // var attrString = NSObject.new; NSAttributedString(string: "The text", attributes: NSUnderlineStyle.Single)
+            
+            btnNoteCheck.addTarget(self, action: #selector(btnNoteCheckClick(_ :)), for: .touchUpInside)
+            btnNoteCheck.tag = row
+            
+            if status == true {
+                if let image = UIImage(named: "Checkmark.png"){
+                    btnNoteCheck.setImage(image, for: .normal)
+                }
+            } else {
+                if let image = UIImage(named: "Checkmarkempty.png"){
+                    btnNoteCheck.setImage(image, for: .normal)
+                   // lblNote?.attributedText = attributeString
+                }
+            }
+        }
+        
         return cell
     }
     
