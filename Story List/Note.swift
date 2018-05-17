@@ -13,7 +13,7 @@ struct Note : Codable {
     var title : String
     var completed : Bool
     var created_at : String
-    var order : Int
+    var order : Int?
     var updated_at : String
     var url : String
 }

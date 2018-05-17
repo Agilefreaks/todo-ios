@@ -19,11 +19,22 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         tfNewNote.text = "What needs to be done"
         tfNewNote.textColor = UIColor.lightGray
+        self.notesTableView!.delegate = self
+        self.notesTableView!.dataSource = self
         
-        self.notes = api.getToDo()
-        self.notesTableView.reloadData()
+       // self.notes = api.getToDo()
+        api.getToDo(completionHandler: {data, error -> Void in
+            if (data != nil) {
+                self.notes = data!
+                self.notesTableView.reloadData()
+            } else {
+                print("api.getData failed")
+                print(error!)
+            }
+        })
         
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false

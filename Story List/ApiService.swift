@@ -12,22 +12,18 @@ import Alamofire
 class ApiService {
     let url  = "https://todo-backend-rails5-api.herokuapp.com/todos"
     
-    func getToDo() -> [Note] {
-        var notes : [Note] = []
-        
-        // TODO: sync vs async
-        
+    func getToDo(completionHandler: (([Note]?, Error?) -> Void)!) -> Void {
+
         Alamofire.request(url, method: .get).responseData { response in
             switch response.result {
             case let .success(value):
                 let jsonDecoder = JSONDecoder()
-                notes = try! jsonDecoder.decode([Note].self, from: value)
-            case let .failure(error):
-                print(error)
+                let notes = try! jsonDecoder.decode([Note].self, from: value)
+                return completionHandler(notes as [Note], nil)
+            case .failure(_):
+                return completionHandler(nil,response.result.error)
             }
         }
-        
-        return notes
     }
     
     func postToDo(title : String){
