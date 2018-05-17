@@ -9,17 +9,20 @@
 import UIKit
 import Alamofire
 
-class NotesTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate{
+class NotesTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NoteTableViewCellDelegate {
+
+    
     
     var notes : [Note] = []
     var api = ApiService()
+    var currentcell : Int = 0
    
     @IBOutlet weak var notesTableView: UITableView!
     @IBOutlet weak var tfNewNote: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.notesTableView.register(UINib(nibName: "NoteTableViewCell", bundle: nil), forCellReuseIdentifier: "NoteTableViewCell")
         tfNewNote.text = "What needs to be done"
         tfNewNote.textColor = UIColor.lightGray
         self.notesTableView!.delegate = self
@@ -51,12 +54,17 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         if isSelected == true {
             if let image = UIImage(named: "Checkmarkempty.png"){
                 sender.setImage(image, for: .normal)
+                let id = notes[currentcell]._id
+                api.updateToDo(id: id, completed: false)
             }
         } else {
             if let image = UIImage(named: "Checkmark.png"){
                 sender.setImage(image, for: .normal)
+                let id = notes[currentcell]._id
+                api.updateToDo(id: id, completed: true)
             }
         }
+        getData()
         sender.isSelected = !sender.isSelected
     }
     
@@ -88,37 +96,50 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return notes.count
     }
+
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
+        cell.delegate = self
         
         let row = indexPath.row
         let item = notes[row]
         let status = item.completed
-        let lblNote = cell.contentView.viewWithTag(1) as? UILabel
-        
-        lblNote?.text = item.title
+       cell.lblNoteTitle.text = item.title
     
-        if let btnNoteCheck = cell.contentView.viewWithTag(2) as? UIButton {
-           // var attrString = NSObject.new; NSAttributedString(string: "The text", attributes: NSUnderlineStyle.Single)
-            
-            btnNoteCheck.addTarget(self, action: #selector(btnNoteCheckClick(_ :)), for: .touchUpInside)
-            btnNoteCheck.tag = row
-            
-            if status == true {
-                if let image = UIImage(named: "Checkmark.png"){
-                    btnNoteCheck.setImage(image, for: .normal)
-                }
-            } else {
-                if let image = UIImage(named: "Checkmarkempty.png"){
-                    btnNoteCheck.setImage(image, for: .normal)
-                   // lblNote?.attributedText = attributeString
-                }
+        if status == true {
+            if let image = UIImage(named: "Checkmark.png"){
+                cell.btnNoteCheck.setImage(image, for: .normal)
+            }
+        } else {
+            if let image = UIImage(named: "Checkmarkempty.png"){
+                cell.btnNoteCheck.setImage(image, for: .normal)
             }
         }
         
         return cell
     }
     
-    
+    func buttonWasTapped(sender: NoteTableViewCell) {
+        let index = self.notesTableView.indexPath(for: sender)
+        print(index?.row)
+        
+        var status = notes[(index?.row)!].completed
+        if status == true {
+            if let image = UIImage(named: "Checkmarkempty.png"){
+                sender.btnNoteCheck.setImage(image, for: .normal)
+                let id = notes[(index?.row)!]._id
+                api.updateToDo(id: id, completed: false)
+            }
+        } else {
+            if let image = UIImage(named: "Checkmark.png"){
+                sender.btnNoteCheck.setImage(image, for: .normal)
+                let id = notes[(index?.row)!]._id
+                api.updateToDo(id: id, completed: true)
+            }
+        }
+        getData()
+        //sender.btnNoteCheck.isSelected = !sender.btnNoteCheck.isSelected
+        
+    }
 }

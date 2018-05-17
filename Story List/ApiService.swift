@@ -39,5 +39,17 @@ class ApiService {
         }
     }
     
+    func updateToDo(id: Oid , completed : Bool){
+        let urlUpdate  = "https://todo-backend-rails5-api.herokuapp.com/todos/\(id.oid)"
+        Alamofire.request(urlUpdate, method: .patch, parameters: ["completed" : completed], encoding: JSONEncoding.default).responseData { response in
+            switch response.result {
+            case let .success(value):
+                break
+            case let .failure(error):
+                print(error)
+            }
+        }
+    }
+    
     
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		174C867420ADD1B9007734F2 /* NoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174C867220ADD1B9007734F2 /* NoteTableViewCell.swift */; };
+		174C867520ADD1B9007734F2 /* NoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 174C867320ADD1B9007734F2 /* NoteTableViewCell.xib */; };
 		175176D020AC65B60039A8A9 /* Checkmarkempty.png in Resources */ = {isa = PBXBuildFile; fileRef = 175176CE20AC65B60039A8A9 /* Checkmarkempty.png */; };
 		175176D120AC65B60039A8A9 /* Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 175176CF20AC65B60039A8A9 /* Checkmark.png */; };
 		175176D320AC85EE0039A8A9 /* ApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175176D220AC85EE0039A8A9 /* ApiService.swift */; };
@@ -39,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		174C867220ADD1B9007734F2 /* NoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewCell.swift; sourceTree = "<group>"; };
+		174C867320ADD1B9007734F2 /* NoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteTableViewCell.xib; sourceTree = "<group>"; };
 		175176CE20AC65B60039A8A9 /* Checkmarkempty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Checkmarkempty.png; sourceTree = "<group>"; };
 		175176CF20AC65B60039A8A9 /* Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Checkmark.png; sourceTree = "<group>"; };
 		175176D220AC85EE0039A8A9 /* ApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiService.swift; sourceTree = "<group>"; };
@@ -138,6 +142,8 @@
 				17C8127320A9C8E700C6E3E7 /* Main.storyboard */,
 				178469A820AB214300827FC7 /* Note.swift */,
 				175176D220AC85EE0039A8A9 /* ApiService.swift */,
+				174C867220ADD1B9007734F2 /* NoteTableViewCell.swift */,
+				174C867320ADD1B9007734F2 /* NoteTableViewCell.xib */,
 			);
 			path = "Story List";
 			sourceTree = "<group>";
@@ -289,6 +295,7 @@
 				17C8127A20A9C8E700C6E3E7 /* LaunchScreen.storyboard in Resources */,
 				175176D020AC65B60039A8A9 /* Checkmarkempty.png in Resources */,
 				17C8127720A9C8E700C6E3E7 /* Assets.xcassets in Resources */,
+				174C867520ADD1B9007734F2 /* NoteTableViewCell.xib in Resources */,
 				17C8127520A9C8E700C6E3E7 /* Main.storyboard in Resources */,
 				175176D120AC65B60039A8A9 /* Checkmark.png in Resources */,
 			);
@@ -358,6 +365,7 @@
 				178469A720AB189300827FC7 /* NotesTableViewController.swift in Sources */,
 				175176D320AC85EE0039A8A9 /* ApiService.swift in Sources */,
 				175176D420AC8F9B0039A8A9 /* Note.swift in Sources */,
+				174C867420ADD1B9007734F2 /* NoteTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
