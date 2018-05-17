@@ -24,8 +24,16 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         tfNewNote.textColor = UIColor.lightGray
         self.notesTableView!.delegate = self
         self.notesTableView!.dataSource = self
+     
+        getData()
         
-       // self.notes = api.getToDo()
+        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:)))
+        tap.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(tap)
+      
+    }
+
+    func getData(){
         api.getToDo(completionHandler: {data, error -> Void in
             if (data != nil) {
                 self.notes = data!
@@ -35,13 +43,8 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
                 print(error!)
             }
         })
-        
-        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:)))
-        tap.cancelsTouchesInView = false
-        self.view.addGestureRecognizer(tap)
-      
     }
-
+    
     @IBAction func btnNoteCheckClick(_ sender: UIButton) {
         
         let isSelected = sender.isSelected
@@ -69,8 +72,8 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         if let title = tfNewNote.text {
             api.postToDo(title: title)
         }
-        
-        self.notesTableView.reloadData()
+     
+        getData()
         
         if (sender.text?.isEmpty)! {
                 sender.text = "What needs to be done"
