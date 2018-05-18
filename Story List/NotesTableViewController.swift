@@ -78,17 +78,6 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         }
     }
     
-    @IBAction func tfNewNoteEditingDidEnd(_ sender: UITextField) {
-
-        if let title = tfNewNote.text {
-            postToDo(title: title)
-        }
-        if (sender.text?.isEmpty)! {
-                sender.text = "What needs to be done"
-                sender.textColor = UIColor.lightGray
-        }
-    }
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -143,7 +132,15 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-       
+        
+        if let title = tfNewNote.text {
+            postToDo(title: title)
+            tfNewNote.text = ""
+        }
+        if (tfNewNote.text?.isEmpty)! {
+            tfNewNote.text = "What needs to be done"
+            tfNewNote.textColor = UIColor.lightGray
+        }
         return true
     }
 }
