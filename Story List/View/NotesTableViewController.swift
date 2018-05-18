@@ -13,26 +13,27 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
     var notes : [Note] = []
     var api = ApiService()
     var currentcell : Int = 0
-   
+    
     @IBOutlet weak var notesTableView: UITableView!
     @IBOutlet weak var tfNewNote: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.notesTableView.register(UINib(nibName: "NoteTableViewCell", bundle: nil), forCellReuseIdentifier: "NoteTableViewCell")
-        tfNewNote.text = "What needs to be done"
-        tfNewNote.textColor = UIColor.lightGray
+        self.notesTableView.accessibilityIdentifier = "notesTableView"
         self.notesTableView!.delegate = self
         self.notesTableView!.dataSource = self
-     
+        
+        tfNewNote.text = "What needs to be done"
+        tfNewNote.textColor = UIColor.lightGray
+        
         getToDos()
         
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false
         self.view.addGestureRecognizer(tap)
-      
     }
-
+    
     func getToDos(){
         api.getToDo(completionHandler: {data, error -> Void in
             if (data != nil) {
@@ -85,7 +86,7 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return notes.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
         cell.delegate = self
@@ -93,8 +94,8 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         let row = indexPath.row
         let item = notes[row]
         let status = item.completed
-       cell.lblNoteTitle.text = item.title
-    
+        cell.lblNoteTitle.text = item.title
+        
         if status == true {
             if let image = UIImage(named: "Checkmark.png"){
                 cell.btnNoteCheck.setImage(image, for: .normal)
@@ -132,11 +133,11 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
         if let title = tfNewNote.text {
             postToDo(title: title)
-            tfNewNote.text = ""
+            tfNewNote.text = nil
         }
+        
         if (tfNewNote.text?.isEmpty)! {
             tfNewNote.text = "What needs to be done"
             tfNewNote.textColor = UIColor.lightGray

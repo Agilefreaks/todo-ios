@@ -24,8 +24,7 @@ class Oid : Codable {
         self.oid = oid
     }
     
-    enum CodingKeys: String, CodingKey
-    {
+    enum CodingKeys: String, CodingKey {
         case oid = "$oid"
     }
 }
