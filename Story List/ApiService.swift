@@ -13,7 +13,6 @@ class ApiService {
     let url  = "https://todo-backend-rails5-api.herokuapp.com/todos"
     
     func getToDo(completionHandler: (([Note]?, Error?) -> Void)!) -> Void {
-
         Alamofire.request(url, method: .get).responseData { response in
             switch response.result {
             case let .success(value):
@@ -26,27 +25,31 @@ class ApiService {
         }
     }
     
-    func postToDo(title : String){
+    func postToDo(title : String,
+                  completionHandler: ((Note?, Error?) -> Void)!) -> Void {
         Alamofire.request(url, method: .post, parameters: ["title": title]).responseData { response in
             switch response.result {
             case let .success(value):
-                // TODO - check response
-                break
-            case let .failure(error):
-                // TODO - show alert
-                print(error)
+                let jsonDecoder = JSONDecoder()
+                let newTodo = try! jsonDecoder.decode(Note.self, from: value)
+                return completionHandler(newTodo as Note, nil)
+            case .failure(_):
+                return completionHandler(nil, response.result.error)
             }
         }
     }
     
-    func updateToDo(id: Oid , completed : Bool){
-        let urlUpdate  = "https://todo-backend-rails5-api.herokuapp.com/todos/\(id.oid)"
+    func updateToDo(id: Oid ,
+                    completed : Bool,
+                    completionHandler: ((String?, Error?) -> Void)!) -> Void {
+        
+        let urlUpdate = url+"/\(id.oid)"
         Alamofire.request(urlUpdate, method: .patch, parameters: ["completed" : completed], encoding: JSONEncoding.default).responseData { response in
             switch response.result {
-            case let .success(value):
-                break
-            case let .failure(error):
-                print(error)
+            case .success(_):
+                return completionHandler("success", nil)
+            case .failure(_):
+                return completionHandler("failure", response.result.error)
             }
         }
     }

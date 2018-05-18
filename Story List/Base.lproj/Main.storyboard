@@ -32,10 +32,11 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                 <connections>
                                     <action selector="tfNewNoteEditingDidBegin:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="zgH-h9-Z3o"/>
                                     <action selector="tfNewNoteEditingDidEnd:" destination="BYZ-38-t0r" eventType="editingDidEnd" id="9Cw-59-lx8"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="OZF-3x-ang"/>
                                 </connections>
                             </textField>
                         </subviews>

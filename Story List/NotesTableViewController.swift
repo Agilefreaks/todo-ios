@@ -9,10 +9,7 @@
 import UIKit
 import Alamofire
 
-class NotesTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NoteTableViewCellDelegate {
-
-    
-    
+class NotesTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NoteTableViewCellDelegate, UITextFieldDelegate {
     var notes : [Note] = []
     var api = ApiService()
     var currentcell : Int = 0
@@ -28,7 +25,7 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         self.notesTableView!.delegate = self
         self.notesTableView!.dataSource = self
      
-        getData()
+        getToDos()
         
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false
@@ -36,7 +33,7 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
       
     }
 
-    func getData(){
+    func getToDos(){
         api.getToDo(completionHandler: {data, error -> Void in
             if (data != nil) {
                 self.notes = data!
@@ -48,24 +45,30 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         })
     }
     
-    @IBAction func btnNoteCheckClick(_ sender: UIButton) {
-        
-        let isSelected = sender.isSelected
-        if isSelected == true {
-            if let image = UIImage(named: "Checkmarkempty.png"){
-                sender.setImage(image, for: .normal)
-                let id = notes[currentcell]._id
-                api.updateToDo(id: id, completed: false)
+    func postToDo(title: String){
+        api.postToDo(title: title, completionHandler: {data, error -> Void in
+            if (data != nil) {
+                self.notes.append(data!)
+                self.notesTableView.reloadData()
+                return 
+            } else {
+                print("api.getData failed")
+                print(error!)
             }
-        } else {
-            if let image = UIImage(named: "Checkmark.png"){
-                sender.setImage(image, for: .normal)
-                let id = notes[currentcell]._id
-                api.updateToDo(id: id, completed: true)
+        })
+    }
+    
+    func updateToDoStatus(id: Oid, completed: Bool) -> String {
+        var status : String = ""
+        api.updateToDo(id: id, completed: completed, completionHandler: {data, error -> Void in
+            if (data != nil) {
+                status = data!
+            } else {
+                print("api.getData failed")
+                print(error!)
             }
-        }
-        getData()
-        sender.isSelected = !sender.isSelected
+        })
+        return status
     }
     
     @IBAction func tfNewNoteEditingDidBegin(_ sender: UITextField) {
@@ -78,11 +81,8 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
     @IBAction func tfNewNoteEditingDidEnd(_ sender: UITextField) {
 
         if let title = tfNewNote.text {
-            api.postToDo(title: title)
+            postToDo(title: title)
         }
-     
-        getData()
-        
         if (sender.text?.isEmpty)! {
                 sender.text = "What needs to be done"
                 sender.textColor = UIColor.lightGray
@@ -97,7 +97,6 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
         return notes.count
     }
 
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
         cell.delegate = self
@@ -122,24 +121,29 @@ class NotesTableViewController: UIViewController, UITableViewDataSource, UITable
     
     func buttonWasTapped(sender: NoteTableViewCell) {
         let index = self.notesTableView.indexPath(for: sender)
-        print(index?.row)
-        
-        var status = notes[(index?.row)!].completed
+        let rowIndex = index?.row
+        let status = notes[rowIndex!].completed
+        let updateReturnStatus : String
         if status == true {
             if let image = UIImage(named: "Checkmarkempty.png"){
                 sender.btnNoteCheck.setImage(image, for: .normal)
-                let id = notes[(index?.row)!]._id
-                api.updateToDo(id: id, completed: false)
+                let id = notes[rowIndex!]._id
+                updateReturnStatus = updateToDoStatus(id: id, completed: false)
+                self.notesTableView.reloadData()
             }
         } else {
             if let image = UIImage(named: "Checkmark.png"){
                 sender.btnNoteCheck.setImage(image, for: .normal)
-                let id = notes[(index?.row)!]._id
-                api.updateToDo(id: id, completed: true)
+                let id = notes[rowIndex!]._id
+                updateReturnStatus = updateToDoStatus(id: id, completed: true)
+                self.notesTableView.reloadData()
             }
         }
-        getData()
-        //sender.btnNoteCheck.isSelected = !sender.btnNoteCheck.isSelected
-        
+        getToDos()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+       
+        return true
     }
 }
